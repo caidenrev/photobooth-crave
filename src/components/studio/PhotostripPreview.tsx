@@ -26,6 +26,7 @@ import {
 import { useAppStore } from "@/store/useAppStore";
 import { useFramesStore } from "@/store/useFramesStore";
 import { ldrSignalingService, LdrMessage } from "@/services/ldrSignalingService";
+import { useAuthStore } from "@/store/useAuthStore";
 import { cn } from "@/lib/utils";
 
 interface PhotostripPreviewProps {
@@ -359,16 +360,38 @@ export function PhotostripPreview({ onOpenCheckout, className }: PhotostripPrevi
     renderCanvas();
   }, [renderCanvas]);
 
-  // Download Trigger
+  // Download Trigger & History Recorder
   const handleDownload = (isHd: boolean) => {
     if (!canvasRef.current) return;
+    const dataUrl = canvasRef.current.toDataURL("image/png");
     const link = document.createElement("a");
     const roomTag = roomId ? `_${roomId}` : "";
     link.download = isHd
       ? `SnapBond_HD${roomTag}_${Date.now()}.png`
       : `SnapBond_Preview${roomTag}_${Date.now()}.png`;
-    link.href = canvasRef.current.toDataURL("image/png");
+    link.href = dataUrl;
     link.click();
+
+    // Auto record into user photostrip history
+    const dateFormatted = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    useAuthStore.getState().addHistory({
+      id: "ps_" + Date.now().toString(36),
+      roomCode: roomId || "SOLO-" + Math.random().toString(36).substring(2, 6).toUpperCase(),
+      mode: mode === "ldr" ? "ldr" : "solo",
+      frameName: currentTheme.name,
+      layout,
+      isPaid: isPaid || isHd,
+      previewUrl: dataUrl,
+      hdUrl: (isPaid || isHd) ? dataUrl : undefined,
+      createdAt: dateFormatted,
+    });
   };
 
   const maxSlots = layout === "1x3" ? 3 : 4;

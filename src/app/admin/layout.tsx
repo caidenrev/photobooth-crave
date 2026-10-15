@@ -14,9 +14,13 @@ import {
   ShieldCheck,
   Bell,
   LogOut,
+  Clock,
+  User,
+  LogIn,
 } from "lucide-react";
 import { BrutalBadge, BrutalButton } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function AdminLayout({
   children,
@@ -24,6 +28,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { user, logout } = useAuthStore();
 
   const navItems = [
     {
@@ -47,6 +52,11 @@ export default function AdminLayout({
       label: "Room LDR Aktif",
       icon: <Radio className="w-4 h-4" strokeWidth={2.25} />,
       badge: "24",
+    },
+    {
+      href: "/history",
+      label: "Riwayat Galeri",
+      icon: <Clock className="w-4 h-4" strokeWidth={2.25} />,
     },
     {
       href: "/admin/settings",
@@ -115,8 +125,46 @@ export default function AdminLayout({
           </nav>
         </div>
 
-        {/* Sidebar Footer */}
-        <div className="pt-4 border-t-2 border-zinc-900 flex flex-col gap-2.5">
+        {/* Sidebar Footer with Auth Profile */}
+        <div className="pt-4 border-t-2 border-zinc-900 flex flex-col gap-3">
+          {user ? (
+            <div className="p-3 bg-stone-50 rounded-2xl border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-rose-300 border border-zinc-900 flex items-center justify-center text-[10px] font-extrabold text-zinc-900">
+                    {user.fullName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-xs font-extrabold text-zinc-900 truncate max-w-[100px]">
+                      {user.fullName}
+                    </span>
+                    <span className="text-[9px] font-mono text-zinc-500 uppercase mt-0.5">
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => logout()}
+                  title="Keluar"
+                  className="p-1.5 rounded-lg bg-white border border-zinc-900 hover:bg-rose-100 text-zinc-700 hover:text-rose-700 cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" strokeWidth={2.25} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link href="/login">
+              <BrutalButton
+                variant="amber"
+                size="sm"
+                fullWidth
+                icon={<LogIn className="w-3.5 h-3.5" strokeWidth={2.25} />}
+              >
+                Login Sebagai Admin
+              </BrutalButton>
+            </Link>
+          )}
+
           <Link href="/studio">
             <BrutalButton
               variant="neutral"
@@ -149,6 +197,21 @@ export default function AdminLayout({
         </div>
 
         <div className="flex items-center gap-2">
+          {user ? (
+            <button
+              onClick={() => logout()}
+              title="Keluar"
+              className="p-1.5 rounded-lg border-2 border-zinc-900 bg-rose-100 text-zinc-800"
+            >
+              <LogOut className="w-3.5 h-3.5" strokeWidth={2.25} />
+            </button>
+          ) : (
+            <Link href="/login">
+              <BrutalBadge variant="amber" size="sm">
+                Login
+              </BrutalBadge>
+            </Link>
+          )}
           <Link href="/studio">
             <BrutalBadge variant="violet" size="sm">
               Studio
