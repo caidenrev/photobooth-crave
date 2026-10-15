@@ -122,10 +122,12 @@ CREATE INDEX IF NOT EXISTS idx_ldr_rooms_status ON public.ldr_rooms(status);
 -- ==============================================================================
 CREATE TABLE IF NOT EXISTS public.photostrips (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  room_id TEXT NOT NULL,                                 -- Terhubung ke room LDR atau SOLO
+  room_id TEXT NOT NULL DEFAULT 'SOLO',                  -- Terhubung ke room LDR atau SOLO
+  mode TEXT NOT NULL DEFAULT 'solo' CHECK (mode IN ('solo', 'ldr')),
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL, -- Pemilik foto (jika login)
-  layout TEXT NOT NULL DEFAULT '1x4',
+  layout TEXT NOT NULL DEFAULT '1x4',                    -- '1x3' | '1x4' | '2x2'
   frame_id TEXT NOT NULL DEFAULT 'cream',
+  frame_name TEXT NOT NULL DEFAULT 'Warm Cream',
   hd_image_url TEXT,                                     -- URL file PNG resolusi HD 300 DPI (bebas watermark)
   preview_image_url TEXT,                                -- URL file PNG pratinjau dengan watermark
   is_paid BOOLEAN NOT NULL DEFAULT false,
@@ -188,7 +190,7 @@ BEGIN
 END $$;
 
 -- ==============================================================================
--- 9. ROW LEVEL SECURITY (RLS) UNTUK TABEL
+-- 9. ROW LEVEL SECURITY (RLS) UNTUK TABEL (IDEMPOTENT)
 -- ==============================================================================
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
@@ -196,32 +198,38 @@ ALTER TABLE public.frames ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ldr_rooms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.photostrips ENABLE ROW LEVEL SECURITY;
 
--- Kebijakan Profiles: User baca profil sendiri, admin bisa semua
+-- Kebijakan Profiles
+DROP POLICY IF EXISTS "Public profiles are viewable by owner or admin" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by owner or admin" ON public.profiles
   FOR SELECT USING (auth.uid() = id OR EXISTS (
     SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
   ));
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 CREATE POLICY "Users can update their own profile" ON public.profiles
   FOR UPDATE USING (auth.uid() = id);
 
--- Kebijakan Publik untuk Membaca Frame (Client Studio)
+-- Kebijakan Frames
+DROP POLICY IF EXISTS "Allow public read frames" ON public.frames;
 CREATE POLICY "Allow public read frames" ON public.frames
   FOR SELECT USING (true);
 
--- Kebijakan Admin untuk Mengelola Frame
+DROP POLICY IF EXISTS "Allow all for frames" ON public.frames;
 CREATE POLICY "Allow all for frames" ON public.frames
   FOR ALL USING (true);
 
--- Kebijakan Publik untuk Payments (dikelola aman via Server API route)
+-- Kebijakan Payments
+DROP POLICY IF EXISTS "Allow all for payments" ON public.payments;
 CREATE POLICY "Allow all for payments" ON public.payments
   FOR ALL USING (true);
 
--- Kebijakan Publik untuk LDR Rooms
+-- Kebijakan LDR Rooms
+DROP POLICY IF EXISTS "Allow all for ldr_rooms" ON public.ldr_rooms;
 CREATE POLICY "Allow all for ldr_rooms" ON public.ldr_rooms
   FOR ALL USING (true);
 
--- Kebijakan Publik untuk Photostrips
+-- Kebijakan Photostrips
+DROP POLICY IF EXISTS "Allow all for photostrips" ON public.photostrips;
 CREATE POLICY "Allow all for photostrips" ON public.photostrips
   FOR ALL USING (true);
 
