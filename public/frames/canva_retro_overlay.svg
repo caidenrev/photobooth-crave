@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 1850" width="600" height="1850">
+  <!-- Canva Frame Template: Y2K Neo Cyber Retro -->
+  <defs>
+    <filter id="brutalShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="3" dy="3" stdDeviation="0" flood-color="#18181B" flood-opacity="1"/>
+    </filter>
+  </defs>
+
+  <!-- Top Y2K Cyber Header -->
+  <rect x="24" y="24" width="552" height="70" rx="16" fill="#FEF08A" stroke="#18181B" stroke-width="4" filter="url(#brutalShadow)"/>
+  <text x="300" y="68" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="26" fill="#18181B" text-anchor="middle" letter-spacing="3">
+    * Y2K NEO PHOTOSTRIP *
+  </text>
+
+  <!-- Retro Cyber Stickers & Badges -->
+  <g transform="translate(15, 480)">
+    <polygon points="18,0 24,12 36,18 24,24 18,36 12,24 0,18 12,12" fill="#A7F3D0" stroke="#18181B" stroke-width="3" filter="url(#brutalShadow)"/>
+  </g>
+
+  <g transform="translate(545, 880)">
+    <rect x="0" y="0" width="40" height="40" rx="10" fill="#DDD6FE" stroke="#18181B" stroke-width="3" filter="url(#brutalShadow)"/>
+    <text x="20" y="26" font-family="monospace" font-weight="900" font-size="16" fill="#18181B" text-anchor="middle">90s</text>
+  </g>
+
+  <g transform="translate(15, 1340)">
+    <circle cx="18" cy="18" r="16" fill="#FED7AA" stroke="#18181B" stroke-width="3" filter="url(#brutalShadow)"/>
+    <text x="18" y="23" font-family="sans-serif" font-weight="900" font-size="12" fill="#18181B" text-anchor="middle">COOL</text>
+  </g>
+
+  <!-- Bottom Y2K Barcode & Brand -->
+  <g transform="translate(40, 1750)">
+    <rect x="0" y="0" width="520" height="60" rx="16" fill="#FEF08A" stroke="#18181B" stroke-width="4" filter="url(#brutalShadow)"/>
+    <text x="260" y="38" font-family="'JetBrains Mono', monospace" font-weight="800" font-size="16" fill="#18181B" text-anchor="middle" letter-spacing="2">
+      CANVA RETRO VIBES // NO.9902
+    </text>
+  </g>
+</svg>
