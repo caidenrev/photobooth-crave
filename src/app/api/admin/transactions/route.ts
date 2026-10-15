@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { db, PaymentRecord } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 // Initial seed transactions so admin dashboard has realistic data out of the box
 const DEFAULT_SEED_TRANSACTIONS: PaymentRecord[] = [
   {
