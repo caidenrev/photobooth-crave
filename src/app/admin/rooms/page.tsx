@@ -6,7 +6,7 @@ import { BrutalCard, BrutalBadge } from "@/components/ui";
 
 export default function AdminRoomsPage() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 sb-stagger">
       <div>
         <BrutalBadge variant="emerald" size="sm" className="mb-1">
           WebRTC Signaling

@@ -176,7 +176,7 @@ export default function AdminFramesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 sb-stagger">
       {/* Page Title & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -234,7 +234,7 @@ export default function AdminFramesPage() {
       </div>
 
       {/* Frame Catalog Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sb-stagger">
         {frames.map((frame) => {
           const isCanva = frame.overlayUrl || frame.designSource === "canva";
           return (

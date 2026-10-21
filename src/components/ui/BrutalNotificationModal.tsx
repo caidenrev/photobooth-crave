@@ -68,7 +68,7 @@ export function BrutalNotificationModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs transition-opacity duration-150"
+        className="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs sb-backdrop transition-opacity duration-150"
         onClick={onClose}
         aria-hidden="true"
       />

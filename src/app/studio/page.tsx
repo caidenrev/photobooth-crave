@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "@/components/layout/TransitionLink";
+import Link from "@/components/layout/TransitionLink";
 import {
   Camera,
   HeartHandshake,
@@ -34,7 +35,7 @@ import { cn } from "@/lib/utils";
 
 function StudioContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const router = useTransitionRouter();
   const roomParam = searchParams.get("room");
   const roleParam = searchParams.get("role");
 
@@ -205,7 +206,7 @@ function StudioContent() {
       </header>
 
       {/* Main Studio Container: 12-Column Responsive Layout */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 flex flex-col gap-5">
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 flex flex-col gap-5 sb-stagger">
         {mode === "ldr" && currentRoomCode && (
           <LdrRoomBar roomId={currentRoomCode} />
         )}

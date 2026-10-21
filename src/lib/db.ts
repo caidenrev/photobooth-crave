@@ -19,6 +19,7 @@ export interface PaymentRecord {
   transaction_id?: string;
   payment_type?: string;
   warning_message?: string;
+  frame_name?: string; // hanya untuk tampilan log admin (tidak disinkron ke Supabase)
   created_at: string;
   updated_at: string;
 }
@@ -86,6 +87,10 @@ async function safeSupabaseSync(task: () => Promise<any>): Promise<void> {
 export const db = {
   getPackage(packageId: string): PackageItem | null {
     return PACKAGES[packageId] || PACKAGES.HD_WATERMARK_UNLOCK;
+  },
+
+  listPayments(): PaymentRecord[] {
+    return readAllPayments();
   },
 
   findPaymentByOrderId(orderId: string): PaymentRecord | null {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/layout/TransitionLink";
 import {
   Wallet,
   CheckCircle2,
@@ -23,28 +23,38 @@ import {
   BrutalCard,
   BrutalBadge,
 } from "@/components/ui";
+import {
+  useAdminLiveData,
+  formatRelativeTime,
+  formatClock,
+  type DayRevenue,
+} from "@/store/useAdminLiveStore";
 
-interface DayRevenue {
-  day: string;
-  revenue: number;
-  count: number;
-}
-
-const WEEKLY_DATA: DayRevenue[] = [
-  { day: "Sen", revenue: 840000, count: 56 },
-  { day: "Sel", revenue: 990000, count: 66 },
-  { day: "Rab", revenue: 1125000, count: 75 },
-  { day: "Kam", revenue: 1260000, count: 84 },
-  { day: "Jum", revenue: 1680000, count: 112 },
-  { day: "Sab", revenue: 2250000, count: 150 },
-  { day: "Min", revenue: 1455000, count: 97 },
-];
+const EMPTY_DAY: DayRevenue = { day: "-", date: "", revenue: 0, count: 0 };
 
 export default function AdminOverviewPage() {
-  const [selectedDay, setSelectedDay] = useState<DayRevenue>(WEEKLY_DATA[6]);
+  const {
+    summary,
+    weeklyTrend: WEEKLY_DATA,
+    transactions,
+    serverTime,
+    isRefreshing,
+    error,
+    refresh,
+  } = useAdminLiveData();
+  // null = otomatis mengikuti hari ini (bar terakhir)
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
-  const maxRevenue = Math.max(...WEEKLY_DATA.map((d) => d.revenue));
+  const selectedDay =
+    WEEKLY_DATA[selectedIdx ?? WEEKLY_DATA.length - 1] ?? EMPTY_DAY;
+  const maxRevenue = Math.max(1, ...WEEKLY_DATA.map((d) => d.revenue));
+  const recentTransactions = transactions.slice(0, 3);
+  const growth = summary?.revenueGrowthPct ?? null;
+  const bestDayIdx = WEEKLY_DATA.reduce(
+    (best, d, i) => (d.revenue > (WEEKLY_DATA[best]?.revenue ?? 0) ? i : best),
+    0
+  );
 
   const handleExportCsv = () => {
     setIsExporting(true);
@@ -65,7 +75,7 @@ export default function AdminOverviewPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 sb-stagger">
       {/* Top Title & Header Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -73,8 +83,16 @@ export default function AdminOverviewPage() {
             <BrutalBadge variant="violet" size="sm">
               SaaS Admin Center
             </BrutalBadge>
-            <span className="text-xs font-mono font-bold text-zinc-500">
-              Live Monitoring
+            <span
+              className="flex items-center gap-1.5 text-xs font-mono font-bold text-zinc-500"
+              title="Data diperbarui otomatis setiap 5 detik"
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  error ? "bg-red-500" : "bg-emerald-500 sb-live-dot"
+                }`}
+              ></span>
+              {error ? "Offline" : `Live Monitoring · ${formatClock(serverTime)}`}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
@@ -86,8 +104,13 @@ export default function AdminOverviewPage() {
           <BrutalButton
             variant="neutral"
             size="sm"
-            onClick={() => window.location.reload()}
-            icon={<RefreshCw className="w-3.5 h-3.5" strokeWidth={2.25} />}
+            onClick={() => refresh()}
+            icon={
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+                strokeWidth={2.25}
+              />
+            }
           >
             Refresh
           </BrutalButton>
@@ -104,7 +127,7 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* 4 KPI Metrics Summary Cards (Soft Neo-Brutalism) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sb-stagger">
         {/* KPI 1: Total Pendapatan QRIS Hari Ini */}
         <BrutalCard variant="amber" className="p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
@@ -117,11 +140,21 @@ export default function AdminOverviewPage() {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-zinc-900">
-              Rp1.455.000
+              <span key={summary?.totalRevenueToday} className="inline-block sb-pop">
+                Rp{(summary?.totalRevenueToday ?? 0).toLocaleString("id-ID")}
+              </span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs font-bold text-emerald-800">
+            <div
+              className={`flex items-center gap-1.5 mt-2 text-xs font-bold ${
+                growth !== null && growth < 0 ? "text-red-700" : "text-emerald-800"
+              }`}
+            >
               <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.25} />
-              <span>+24.5% dari kemarin</span>
+              <span>
+                {growth === null
+                  ? "Belum ada data kemarin"
+                  : `${growth >= 0 ? "+" : ""}${growth.toFixed(1)}% dari kemarin`}
+              </span>
             </div>
           </div>
         </BrutalCard>
@@ -138,11 +171,15 @@ export default function AdminOverviewPage() {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-zinc-900">
-              97 Strip
+              <span key={summary?.photostripsRedeemed} className="inline-block sb-pop">
+                {summary?.photostripsRedeemed ?? 0} Strip
+              </span>
             </div>
             <div className="flex items-center gap-1.5 mt-2 text-xs font-bold text-zinc-700">
               <Clock className="w-3.5 h-3.5" strokeWidth={2.25} />
-              <span>Rata-rata 8 per jam</span>
+              <span>
+                Rata-rata {(summary?.avgPerHour ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 1 })} per jam
+              </span>
             </div>
           </div>
         </BrutalCard>
@@ -159,10 +196,14 @@ export default function AdminOverviewPage() {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-zinc-900">
-              38.4%
+              <span key={summary?.paidConversionRate} className="inline-block sb-pop">
+                {(summary?.paidConversionRate ?? 0).toFixed(1)}%
+              </span>
             </div>
             <div className="flex items-center gap-1.5 mt-2 text-xs font-bold text-zinc-700">
-              <span>97 Paid dari 252 Sesi</span>
+              <span>
+                {summary?.paidCount ?? 0} Paid dari {summary?.totalSessions ?? 0} Sesi
+              </span>
             </div>
           </div>
         </BrutalCard>
@@ -179,11 +220,13 @@ export default function AdminOverviewPage() {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-zinc-900">
-              24 Room
+              <span key={summary?.activeLdrRooms} className="inline-block sb-pop">
+                {summary?.activeLdrRooms ?? 0} Room
+              </span>
             </div>
             <div className="flex items-center gap-1.5 mt-2 text-xs font-bold text-emerald-800">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-              <span>48 User Terkoneksi</span>
+              <span>{summary?.pendingCount ?? 0} Tagihan Menunggu</span>
             </div>
           </div>
         </BrutalCard>
@@ -234,12 +277,12 @@ export default function AdminOverviewPage() {
           <div className="h-56 flex items-end justify-between gap-2 sm:gap-4 px-2">
             {WEEKLY_DATA.map((item, idx) => {
               const heightPercent = Math.round((item.revenue / maxRevenue) * 100);
-              const isSelected = selectedDay.day === item.day;
+              const isSelected = idx === (selectedIdx ?? WEEKLY_DATA.length - 1);
 
               return (
                 <div
-                  key={idx}
-                  onClick={() => setSelectedDay(item)}
+                  key={item.date || idx}
+                  onClick={() => setSelectedIdx(idx)}
                   className="flex-1 flex flex-col items-center gap-2 group cursor-pointer"
                 >
                   {/* Tooltip on hover */}
@@ -256,11 +299,11 @@ export default function AdminOverviewPage() {
                   {/* The Bar */}
                   <div className="w-full max-w-[48px] h-44 bg-stone-100 rounded-t-xl border-2 border-zinc-900 flex items-end overflow-hidden shadow-[2px_2px_0px_0px_#18181b]">
                     <div
-                      style={{ height: `${heightPercent}%` }}
-                      className={`w-full transition-all duration-500 rounded-t-md border-t-2 border-zinc-900 ${
+                      style={{ height: `${heightPercent}%`, animationDelay: `${idx * 60}ms` }}
+                      className={`w-full transition-all duration-500 rounded-t-md border-t-2 border-zinc-900 sb-grow-up ${
                         isSelected
                           ? "bg-amber-400"
-                          : idx === 5
+                          : idx === bestDayIdx && item.revenue > 0
                           ? "bg-emerald-400"
                           : "bg-violet-300 group-hover:bg-amber-300"
                       }`}
@@ -303,35 +346,24 @@ export default function AdminOverviewPage() {
           </div>
 
           <div className="flex flex-col gap-3">
-            {[
-              {
-                orderId: "SB-LDR892B-90214-1",
-                room: "LDR-892B",
-                frame: "Pastel Rose",
-                time: "10 menit lalu",
-                status: "PAID",
-                amount: 15000,
-              },
-              {
-                orderId: "SB-SOLO-90180-1",
-                room: "SOLO",
-                frame: "Warm Cream",
-                time: "24 menit lalu",
-                status: "PAID",
-                amount: 15000,
-              },
-              {
-                orderId: "SB-LDR541A-90112-1",
-                room: "LDR-541A",
-                frame: "Dark Noir",
-                time: "45 menit lalu",
-                status: "PENDING",
-                amount: 15000,
-              },
-            ].map((tx, idx) => (
+            {recentTransactions.length === 0 && (
+              <div className="py-6 text-center text-zinc-500 font-bold text-xs">
+                Belum ada aktivitas tebus foto.
+              </div>
+            )}
+            {recentTransactions
+              .map((t) => ({
+                orderId: t.order_id,
+                room: t.room_id,
+                frame: t.frame_name,
+                time: formatRelativeTime(t.paid_at || t.created_at, serverTime),
+                status: t.status === "paid" ? "PAID" : t.status === "pending" ? "PENDING" : "EXPIRED",
+                amount: t.amount,
+              }))
+              .map((tx, idx) => (
               <div
-                key={idx}
-                className="p-3 bg-stone-50 rounded-xl border-2 border-zinc-900 flex items-center justify-between shadow-[2px_2px_0px_0px_#18181b]"
+                key={tx.orderId}
+                className="p-3 bg-stone-50 rounded-xl border-2 border-zinc-900 flex items-center justify-between shadow-[2px_2px_0px_0px_#18181b] sb-reveal"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-200 border-2 border-zinc-900 flex items-center justify-center font-mono font-extrabold text-xs">
@@ -354,15 +386,21 @@ export default function AdminOverviewPage() {
                     </div>
                     <div className="text-[10px] text-zinc-500">{tx.time}</div>
                   </div>
-                  {tx.status === "PAID" ? (
-                    <BrutalBadge variant="emerald" size="sm">
-                      Lunas
-                    </BrutalBadge>
-                  ) : (
-                    <BrutalBadge variant="amber" size="sm">
-                      Pending
-                    </BrutalBadge>
-                  )}
+                  <span key={tx.status} className="inline-flex sb-pop">
+                    {tx.status === "PAID" ? (
+                      <BrutalBadge variant="emerald" size="sm">
+                        Lunas
+                      </BrutalBadge>
+                    ) : tx.status === "PENDING" ? (
+                      <BrutalBadge variant="amber" size="sm">
+                        Pending
+                      </BrutalBadge>
+                    ) : (
+                      <BrutalBadge variant="neutral" size="sm">
+                        Kedaluwarsa
+                      </BrutalBadge>
+                    )}
+                  </span>
                 </div>
               </div>
             ))}

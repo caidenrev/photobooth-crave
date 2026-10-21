@@ -1,6 +1,7 @@
 "use client";
 
 import React, { forwardRef } from "react";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ButtonVariant = "primary" | "amber" | "violet" | "emerald" | "neutral" | "danger" | "ghost";
@@ -12,6 +13,8 @@ export interface BrutalButtonProps extends React.ButtonHTMLAttributes<HTMLButton
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   fullWidth?: boolean;
+  /** Tampilkan spinner & kunci tombol selama aksi async berjalan */
+  loading?: boolean;
 }
 
 export const BrutalButton = forwardRef<HTMLButtonElement, BrutalButtonProps>(
@@ -25,6 +28,7 @@ export const BrutalButton = forwardRef<HTMLButtonElement, BrutalButtonProps>(
       iconPosition = "left",
       fullWidth = false,
       disabled,
+      loading = false,
       ...props
     },
     ref
@@ -53,14 +57,19 @@ export const BrutalButton = forwardRef<HTMLButtonElement, BrutalButtonProps>(
         ? "active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:-translate-y-0.5 hover:-translate-x-0.5"
         : "";
 
-    const disabledStyles = disabled
+    const isDisabled = disabled || loading;
+
+    const disabledStyles = loading
+      ? "cursor-wait pointer-events-none"
+      : disabled
       ? "opacity-50 cursor-not-allowed pointer-events-none grayscale"
       : "";
 
     return (
       <button
         ref={ref}
-        disabled={disabled}
+        disabled={isDisabled}
+        aria-busy={loading || undefined}
         className={cn(
           baseStyles,
           variantStyles[variant],
@@ -72,13 +81,18 @@ export const BrutalButton = forwardRef<HTMLButtonElement, BrutalButtonProps>(
         )}
         {...props}
       >
-        {icon && iconPosition === "left" && (
+        {loading && (
+          <span className="inline-flex shrink-0 items-center justify-center">
+            <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2.25} />
+          </span>
+        )}
+        {!loading && icon && iconPosition === "left" && (
           <span className="inline-flex shrink-0 items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
             {icon}
           </span>
         )}
         {children && <span>{children}</span>}
-        {icon && iconPosition === "right" && (
+        {!loading && icon && iconPosition === "right" && (
           <span className="inline-flex shrink-0 items-center justify-center [&>svg]:w-4 [&>svg]:h-4">
             {icon}
           </span>

@@ -73,6 +73,7 @@ export function QrisCheckoutModal({
           roomId,
           packageId: "HD_WATERMARK_UNLOCK",
           attempt,
+          frameName,
         });
 
         setPaymentData(data);

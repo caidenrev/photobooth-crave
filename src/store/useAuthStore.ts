@@ -117,3 +117,10 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Realtime antar-tab: login/logout & riwayat photostrip tersinkron di semua tab
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e) => {
+    if (e.key === "snapbond_user_auth") useAuthStore.persist.rehydrate();
+  });
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Link from "@/components/layout/TransitionLink";
 import { Camera, Heart, QrCode, ShieldCheck, Sparkles } from "lucide-react";
 import { BrutalBadge } from "@/components/ui";
 

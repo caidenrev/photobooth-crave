@@ -1,10 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { db } from "@/lib/db";
 import { paymentGatewayServer } from "@/lib/paymentGatewayServer";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(req: Request) {
+  await connection();
   try {
     const { searchParams } = new URL(req.url);
     const orderId = searchParams.get("order_id");

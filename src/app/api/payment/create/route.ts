@@ -8,6 +8,8 @@ export async function POST(req: Request) {
     const roomId = (body.room_id || "SOLO").toString().trim().toUpperCase();
     const packageId = body.package_id || "HD_WATERMARK_UNLOCK";
     const attempt = Number(body.attempt) || 1;
+    const frameName =
+      typeof body.frame_name === "string" ? body.frame_name.trim().slice(0, 60) : undefined;
 
     // 1. Authoritative price retrieval from server database
     const pkg = db.getPackage(packageId);
@@ -71,6 +73,7 @@ export async function POST(req: Request) {
       qris_string: gatewayInvoice.qris_string,
       qris_image_base64: gatewayInvoice.qris_image_base64,
       expires_at: gatewayInvoice.expires_at,
+      frame_name: frameName,
     });
 
     // 6. Return payload to client (API Key never leaves server)

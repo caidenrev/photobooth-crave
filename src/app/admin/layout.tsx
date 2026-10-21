@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Link from "@/components/layout/TransitionLink";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -21,6 +21,7 @@ import {
 import { BrutalBadge, BrutalButton } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useAdminLiveData } from "@/store/useAdminLiveStore";
 
 export default function AdminLayout({
   children,
@@ -29,6 +30,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
+  const { summary } = useAdminLiveData();
 
   const navItems = [
     {
@@ -51,7 +53,7 @@ export default function AdminLayout({
       href: "/admin/rooms",
       label: "Room LDR Aktif",
       icon: <Radio className="w-4 h-4" strokeWidth={2.25} />,
-      badge: "24",
+      badge: summary ? String(summary.activeLdrRooms) : "…",
     },
     {
       href: "/history",

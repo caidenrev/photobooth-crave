@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/layout/TransitionLink";
 import { usePathname } from "next/navigation";
 import {
   Camera,
@@ -33,7 +33,10 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FFFDF9]/95 backdrop-blur-md border-b-2 border-zinc-900 px-4 sm:px-6 py-3.5">
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className="sticky top-0 z-40 w-full bg-[#FFFDF9]/95 backdrop-blur-md border-b-2 border-zinc-900 px-4 sm:px-6 py-3.5"
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">

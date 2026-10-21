@@ -63,3 +63,256 @@
   background: #18181B;
   border-radius: 4px;
 }
+
+/* ======================================================== */
+/* Motion system — animasi saja, tidak mengubah tampilan     */
+/* Semua entrance memakai fill-mode `backwards` supaya        */
+/* transform hover/active bawaan tetap bekerja setelahnya.    */
+/* ======================================================== */
+@keyframes sb-enter {
+  from {
+    opacity: var(--sb-enter-opacity, 1);
+    transform: translate3d(var(--sb-enter-x, 0), var(--sb-enter-y, 0), 0)
+      scale(var(--sb-enter-scale, 1));
+  }
+}
+
+@keyframes sb-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+@keyframes sb-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sb-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes sb-flash {
+  0% {
+    background-color: rgb(253 230 138 / 0.9);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes sb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0);
+  }
+}
+
+@keyframes sb-grow-up {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes sb-live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  80%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Utility animate-in / fade-in-0 / zoom-in-95 / slide-in-from-top-2
+   (sudah dipakai di komponen modal & menu, sebelumnya belum terdefinisi) */
+.animate-in {
+  animation: sb-enter 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.fade-in-0 {
+  --sb-enter-opacity: 0;
+}
+.zoom-in-75 {
+  --sb-enter-scale: 0.75;
+}
+.zoom-in-95 {
+  --sb-enter-scale: 0.95;
+}
+.slide-in-from-top-2 {
+  --sb-enter-y: -0.5rem;
+}
+
+/* Elemen tunggal muncul dari bawah */
+.sb-reveal {
+  animation: sb-fade-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: var(--sb-delay, 0ms);
+}
+
+/* Semua anak langsung muncul berurutan (stagger) */
+.sb-stagger > * {
+  animation: sb-fade-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.sb-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.sb-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.sb-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.sb-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.sb-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.sb-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.sb-stagger > *:nth-child(n + 8) { animation-delay: 420ms; }
+
+.sb-backdrop {
+  animation: sb-fade 0.2s ease-out backwards;
+}
+
+/* Angka / badge yang baru berubah karena data realtime */
+.sb-pop {
+  animation: sb-pop 0.35s ease-out;
+}
+
+/* Baris yang baru saja diperbarui secara realtime */
+.sb-flash {
+  animation: sb-flash 1.4s ease-out;
+}
+/* Gabungan dengan sb-reveal: nama animasi pertama tetap sama sehingga
+   entrance tidak diputar ulang saat class flash dilepas */
+.sb-reveal.sb-flash {
+  animation: sb-fade-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards,
+    sb-flash 1.4s ease-out;
+}
+
+.sb-float {
+  animation: sb-float 3.2s ease-in-out infinite;
+}
+
+/* Batang chart tumbuh dari bawah */
+.sb-grow-up {
+  transform-origin: bottom;
+  animation: sb-grow-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* Indikator "Live" berdenyut */
+.sb-live-dot {
+  position: relative;
+}
+.sb-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: sb-live-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ======================================================== */
+/* Page transition (View Transitions API)                    */
+/* ======================================================== */
+@keyframes sb-page-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes sb-page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+}
+
+::view-transition-old(.page-exit) {
+  animation: sb-page-out 160ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(.page-enter) {
+  animation: sb-page-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
+}
+
+/* Slide berarah: maju geser ke kiri, kembali geser ke kanan */
+@keyframes sb-page-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sb-page-slide {
+  from {
+    translate: var(--sb-slide-offset) 0;
+  }
+}
+
+::view-transition-old(.nav-forward),
+::view-transition-old(.nav-back) {
+  animation:
+    150ms ease-in both sb-page-fade reverse,
+    380ms cubic-bezier(0.4, 0, 0.2, 1) both sb-page-slide reverse;
+}
+::view-transition-new(.nav-forward),
+::view-transition-new(.nav-back) {
+  animation:
+    220ms ease-out 140ms both sb-page-fade,
+    380ms cubic-bezier(0.4, 0, 0.2, 1) both sb-page-slide;
+}
+::view-transition-old(.nav-forward) {
+  --sb-slide-offset: -60px;
+}
+::view-transition-new(.nav-forward) {
+  --sb-slide-offset: 60px;
+}
+::view-transition-old(.nav-back) {
+  --sb-slide-offset: 60px;
+}
+::view-transition-new(.nav-back) {
+  --sb-slide-offset: -60px;
+}
+
+/* Navbar tetap diam saat konten berpindah */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* Klik tetap tembus ke halaman selama animasi berjalan */
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

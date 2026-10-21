@@ -1,19 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  ReceiptText,
-  Filter,
   Download,
   Search,
   KeyRound,
-  ExternalLink,
   RefreshCw,
-  Clock,
   CheckCircle2,
-  AlertTriangle,
-  Radio,
-  Layers,
 } from "lucide-react";
 import {
   BrutalCard,
@@ -23,6 +16,14 @@ import {
   BrutalModal,
   BrutalNotificationModal,
 } from "@/components/ui";
+import {
+  useAdminLiveData,
+  formatRelativeTime,
+  formatClock,
+  type AdminTransaction,
+} from "@/store/useAdminLiveStore";
+
+type TxStatusLabel = "PAID" | "PENDING" | "EXPIRED";
 
 interface TransactionItem {
   id: string;
@@ -31,80 +32,48 @@ interface TransactionItem {
   mode: "LDR" | "Solo";
   frameName: string;
   amount: number;
-  status: "PAID" | "PENDING" | "EXPIRED";
+  status: TxStatusLabel;
   timestamp: string;
 }
 
+function toTransactionItem(tx: AdminTransaction, now: number | null): TransactionItem {
+  return {
+    id: tx.order_id,
+    orderId: tx.order_id,
+    roomCode: tx.room_id,
+    mode: tx.mode,
+    frameName: tx.frame_name,
+    amount: tx.amount,
+    status: tx.status === "paid" ? "PAID" : tx.status === "pending" ? "PENDING" : "EXPIRED",
+    timestamp: formatRelativeTime(tx.paid_at || tx.created_at, now),
+  };
+}
+
 export default function AdminTransactionsPage() {
+  const {
+    transactions: liveTransactions,
+    serverTime,
+    isLoading,
+    isRefreshing,
+    error,
+    changedIds,
+    refresh,
+    manualUnlock,
+  } = useAdminLiveData();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [isExporting, setIsExporting] = useState(false);
+  const [isUnlocking, setIsUnlocking] = useState(false);
   const [unlockTarget, setUnlockTarget] = useState<TransactionItem | null>(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [notice, setNotice] = useState<{
+    isOpen: boolean;
+    type: "success" | "danger";
+    title: string;
+    message: string;
+  }>({ isOpen: false, type: "success", title: "", message: "" });
 
-  const [transactions, setTransactions] = useState<TransactionItem[]>([
-    {
-      id: "tx-1",
-      orderId: "SB-LDR892B-90214-1",
-      roomCode: "LDR-892B",
-      mode: "LDR",
-      frameName: "Pastel Rose",
-      amount: 15000,
-      status: "PAID",
-      timestamp: "10 menit lalu",
-    },
-    {
-      id: "tx-2",
-      orderId: "SB-SOLO-90180-1",
-      roomCode: "SOLO",
-      mode: "Solo",
-      frameName: "Warm Cream",
-      amount: 15000,
-      status: "PAID",
-      timestamp: "24 menit lalu",
-    },
-    {
-      id: "tx-3",
-      orderId: "SB-LDR541A-90112-1",
-      roomCode: "LDR-541A",
-      mode: "LDR",
-      frameName: "Dark Noir",
-      amount: 15000,
-      status: "PENDING",
-      timestamp: "45 menit lalu",
-    },
-    {
-      id: "tx-4",
-      orderId: "SB-LDR992C-90050-1",
-      roomCode: "LDR-992C",
-      mode: "LDR",
-      frameName: "Soft Violet",
-      amount: 15000,
-      status: "PAID",
-      timestamp: "1 jam lalu",
-    },
-    {
-      id: "tx-5",
-      orderId: "SB-SOLO-89912-1",
-      roomCode: "SOLO",
-      mode: "Solo",
-      frameName: "Warm Amber",
-      amount: 15000,
-      status: "EXPIRED",
-      timestamp: "2 jam lalu",
-    },
-    {
-      id: "tx-6",
-      orderId: "SB-LDR104X-89800-1",
-      roomCode: "LDR-104X",
-      mode: "LDR",
-      frameName: "Mint Emerald",
-      amount: 15000,
-      status: "PAID",
-      timestamp: "3 jam lalu",
-    },
-  ]);
+  const transactions = liveTransactions.map((tx) => toTransactionItem(tx, serverTime));
 
   // Filter & Search Logic
   const filtered = transactions.filter((t) => {
@@ -114,6 +83,9 @@ export default function AdminTransactionsPage() {
     const matchesFilter = statusFilter === "ALL" || t.status === statusFilter;
     return matchesSearch && matchesFilter;
   });
+
+  const countByStatus = (status: string) =>
+    status === "ALL" ? transactions.length : transactions.filter((t) => t.status === status).length;
 
   // Export CSV Action
   const handleExportCsv = () => {
@@ -146,36 +118,52 @@ export default function AdminTransactionsPage() {
   // Manual Unlock Action
   const handleConfirmUnlock = async () => {
     if (!unlockTarget) return;
+    const target = unlockTarget;
 
-    // Call API /api/admin/transactions
-    try {
-      await fetch("/api/admin/transactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "manual_unlock",
-          order_id: unlockTarget.orderId,
-        }),
-      });
-    } catch (e) {
-      console.warn("Manual unlock API failed, applying local update:", e);
-    }
-
-    setTransactions((prev) =>
-      prev.map((t) =>
-        t.id === unlockTarget.id ? { ...t, status: "PAID" } : t
-      )
-    );
-
-    setSuccessMessage(
-      `Order ${unlockTarget.orderId} (Room ${unlockTarget.roomCode}) telah dibuka kuncinya secara manual. Pelanggan dapat langsung mengunduh HD.`
-    );
+    setIsUnlocking(true);
+    const result = await manualUnlock(target.orderId);
+    setIsUnlocking(false);
     setUnlockTarget(null);
-    setIsSuccessModalOpen(true);
+
+    setNotice(
+      result.ok
+        ? {
+            isOpen: true,
+            type: "success",
+            title: "Buka Kunci Berhasil!",
+            message: `Order ${target.orderId} (Room ${target.roomCode}) telah dibuka kuncinya secara manual. Pelanggan dapat langsung mengunduh HD.`,
+          }
+        : {
+            isOpen: true,
+            type: "danger",
+            title: "Buka Kunci Gagal",
+            message: result.message,
+          }
+    );
   };
 
+  const renderStatusBadge = (status: TxStatusLabel) => (
+    <span key={status} className="inline-flex sb-pop">
+      {status === "PAID" && (
+        <BrutalBadge variant="emerald" size="sm">
+          Lunas
+        </BrutalBadge>
+      )}
+      {status === "PENDING" && (
+        <BrutalBadge variant="amber" size="sm">
+          Pending
+        </BrutalBadge>
+      )}
+      {status === "EXPIRED" && (
+        <BrutalBadge variant="neutral" size="sm">
+          Kedaluwarsa
+        </BrutalBadge>
+      )}
+    </span>
+  );
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 sb-stagger">
       {/* Top Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -185,6 +173,17 @@ export default function AdminTransactionsPage() {
             </BrutalBadge>
             <span className="text-xs font-mono font-bold text-zinc-500">
               Gateway: Crave QRIS
+            </span>
+            <span
+              className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-zinc-500"
+              title="Data diperbarui otomatis setiap 5 detik"
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  error ? "bg-red-500" : "bg-emerald-500 sb-live-dot"
+                }`}
+              ></span>
+              {error ? "Offline" : `Live · ${formatClock(serverTime)}`}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
@@ -196,8 +195,13 @@ export default function AdminTransactionsPage() {
           <BrutalButton
             variant="neutral"
             size="sm"
-            onClick={() => window.location.reload()}
-            icon={<RefreshCw className="w-3.5 h-3.5" strokeWidth={2.25} />}
+            onClick={() => refresh()}
+            icon={
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+                strokeWidth={2.25}
+              />
+            }
           >
             Refresh
           </BrutalButton>
@@ -205,7 +209,7 @@ export default function AdminTransactionsPage() {
             variant="amber"
             size="sm"
             onClick={handleExportCsv}
-            disabled={isExporting}
+            disabled={isExporting || isLoading}
             icon={<Download className="w-3.5 h-3.5" strokeWidth={2.25} />}
           >
             {isExporting ? "Mengunduh..." : "Export CSV"}
@@ -238,13 +242,18 @@ export default function AdminTransactionsPage() {
                 key={btn.id}
                 type="button"
                 onClick={() => setStatusFilter(btn.id)}
-                className={`px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:translate-x-[1px] active:translate-y-[1px] ${
                   statusFilter === btn.id
                     ? "bg-amber-300 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] text-zinc-900"
                     : "bg-stone-50 border-zinc-300 text-zinc-600 hover:bg-stone-100"
                 }`}
               >
                 {btn.label}
+                {!isLoading && (
+                  <span key={countByStatus(btn.id)} className="ml-1 font-mono sb-pop inline-block">
+                    ({countByStatus(btn.id)})
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -267,7 +276,13 @@ export default function AdminTransactionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-zinc-200">
-              {filtered.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-zinc-500 font-bold text-xs animate-pulse">
+                    Memuat transaksi terbaru...
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-zinc-500 font-bold text-xs">
                     Tidak ada transaksi yang sesuai dengan filter pencarian.
@@ -275,7 +290,12 @@ export default function AdminTransactionsPage() {
                 </tr>
               ) : (
                 filtered.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-amber-50/50 transition-colors">
+                  <tr
+                    key={tx.id}
+                    className={`hover:bg-amber-50/50 transition-colors sb-reveal ${
+                      changedIds[tx.id] ? "sb-flash" : ""
+                    }`}
+                  >
                     <td className="py-3.5 px-3 font-mono font-bold text-xs text-zinc-900">
                       {tx.orderId}
                     </td>
@@ -290,23 +310,7 @@ export default function AdminTransactionsPage() {
                     <td className="py-3.5 px-3 font-mono font-extrabold text-xs text-zinc-900">
                       Rp{tx.amount.toLocaleString("id-ID")}
                     </td>
-                    <td className="py-3.5 px-3">
-                      {tx.status === "PAID" && (
-                        <BrutalBadge variant="emerald" size="sm">
-                          Lunas
-                        </BrutalBadge>
-                      )}
-                      {tx.status === "PENDING" && (
-                        <BrutalBadge variant="amber" size="sm">
-                          Pending
-                        </BrutalBadge>
-                      )}
-                      {tx.status === "EXPIRED" && (
-                        <BrutalBadge variant="neutral" size="sm">
-                          Kedaluwarsa
-                        </BrutalBadge>
-                      )}
-                    </td>
+                    <td className="py-3.5 px-3">{renderStatusBadge(tx.status)}</td>
                     <td className="py-3.5 px-3 text-xs text-zinc-500 font-medium">
                       {tx.timestamp}
                     </td>
@@ -315,7 +319,7 @@ export default function AdminTransactionsPage() {
                         <button
                           type="button"
                           onClick={() => setUnlockTarget(tx)}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-200 border-2 border-zinc-900 text-emerald-950 font-bold text-xs shadow-[2px_2px_0px_0px_#18181b] hover:bg-emerald-300 transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-emerald-200 border-2 border-zinc-900 text-emerald-950 font-bold text-xs shadow-[2px_2px_0px_0px_#18181b] hover:bg-emerald-300 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                         >
                           Manual Unlock
                         </button>
@@ -336,7 +340,11 @@ export default function AdminTransactionsPage() {
         {/* MOBILE CARD LIST VIEW (Visible on < sm)                  */}
         {/* ======================================================== */}
         <div className="sm:hidden flex flex-col gap-3">
-          {filtered.length === 0 ? (
+          {isLoading ? (
+            <div className="py-6 text-center text-zinc-500 font-bold text-xs animate-pulse">
+              Memuat transaksi terbaru...
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="py-6 text-center text-zinc-500 font-bold text-xs">
               Tidak ada transaksi ditemukan.
             </div>
@@ -344,27 +352,15 @@ export default function AdminTransactionsPage() {
             filtered.map((tx) => (
               <div
                 key={tx.id}
-                className="p-4 bg-stone-50 rounded-2xl border-2 border-zinc-900 flex flex-col gap-2.5 shadow-[2px_2px_0px_0px_#18181b]"
+                className={`p-4 bg-stone-50 rounded-2xl border-2 border-zinc-900 flex flex-col gap-2.5 shadow-[2px_2px_0px_0px_#18181b] sb-reveal ${
+                  changedIds[tx.id] ? "sb-flash" : ""
+                }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono font-extrabold text-xs text-zinc-900">
                     {tx.orderId}
                   </span>
-                  {tx.status === "PAID" && (
-                    <BrutalBadge variant="emerald" size="sm">
-                      Lunas
-                    </BrutalBadge>
-                  )}
-                  {tx.status === "PENDING" && (
-                    <BrutalBadge variant="amber" size="sm">
-                      Pending
-                    </BrutalBadge>
-                  )}
-                  {tx.status === "EXPIRED" && (
-                    <BrutalBadge variant="neutral" size="sm">
-                      Kedaluwarsa
-                    </BrutalBadge>
-                  )}
+                  {renderStatusBadge(tx.status)}
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-zinc-600">
@@ -384,7 +380,7 @@ export default function AdminTransactionsPage() {
                     <button
                       type="button"
                       onClick={() => setUnlockTarget(tx)}
-                      className="px-3 py-1 rounded-xl bg-emerald-300 border-2 border-zinc-900 text-xs font-extrabold text-emerald-950 shadow-[2px_2px_0px_0px_#18181b] cursor-pointer"
+                      className="px-3 py-1 rounded-xl bg-emerald-300 border-2 border-zinc-900 text-xs font-extrabold text-emerald-950 shadow-[2px_2px_0px_0px_#18181b] cursor-pointer transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                     >
                       Unlock Manual
                     </button>
@@ -399,7 +395,7 @@ export default function AdminTransactionsPage() {
       {/* Manual Unlock Confirmation Modal */}
       <BrutalModal
         isOpen={!!unlockTarget}
-        onClose={() => setUnlockTarget(null)}
+        onClose={() => !isUnlocking && setUnlockTarget(null)}
         title="Konfirmasi Buka Kunci Manual"
         description="Aksi ini akan menandai pesanan sebagai LUNAS dan segera membuka kunci tombol unduh HD untuk pelanggan."
         icon={<KeyRound className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />}
@@ -416,7 +412,9 @@ export default function AdminTransactionsPage() {
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-600">Total Tagihan:</span>
-              <span className="font-mono font-bold text-zinc-900">Rp15.000</span>
+              <span className="font-mono font-bold text-zinc-900">
+                Rp{(unlockTarget?.amount ?? 0).toLocaleString("id-ID")}
+              </span>
             </div>
           </div>
 
@@ -424,6 +422,7 @@ export default function AdminTransactionsPage() {
             <BrutalButton
               variant="neutral"
               size="sm"
+              disabled={isUnlocking}
               onClick={() => setUnlockTarget(null)}
             >
               Batal
@@ -431,22 +430,23 @@ export default function AdminTransactionsPage() {
             <BrutalButton
               variant="emerald"
               size="sm"
+              loading={isUnlocking}
               onClick={handleConfirmUnlock}
               icon={<CheckCircle2 className="w-4 h-4" strokeWidth={2.25} />}
             >
-              Ya, Buka Kunci Sekarang
+              {isUnlocking ? "Membuka Kunci..." : "Ya, Buka Kunci Sekarang"}
             </BrutalButton>
           </div>
         </div>
       </BrutalModal>
 
-      {/* Success Notification Modal (No browser alert) */}
+      {/* Result Notification Modal (No browser alert) */}
       <BrutalNotificationModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-        type="success"
-        title="Buka Kunci Berhasil!"
-        message={successMessage}
+        isOpen={notice.isOpen}
+        onClose={() => setNotice((prev) => ({ ...prev, isOpen: false }))}
+        type={notice.type}
+        title={notice.title}
+        message={notice.message}
       />
     </div>
   );

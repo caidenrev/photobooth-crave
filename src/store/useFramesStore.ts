@@ -178,3 +178,10 @@ export const useFramesStore = create<FramesState>()(
     }
   )
 );
+
+// Realtime antar-tab: perubahan katalog di /admin/frames langsung terlihat di studio
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e) => {
+    if (e.key === "snapbond_frames_catalog") useFramesStore.persist.rehydrate();
+  });
+}

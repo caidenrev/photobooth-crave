@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "@/components/layout/TransitionLink";
+import { useTransitionRouter } from "@/components/layout/TransitionLink";
 import {
   Camera,
   LogIn,
@@ -32,7 +32,7 @@ import {
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const { setUser } = useAuthStore();
 
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -155,7 +155,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] py-12 px-4 flex flex-col justify-center items-center">
-      <div className="w-full max-w-md flex flex-col gap-6">
+      <div className="w-full max-w-md flex flex-col gap-6 sb-stagger">
         {/* Top Brand Logo */}
         <Link href="/" className="flex items-center justify-center gap-2.5 group">
           <div className="w-12 h-12 rounded-2xl bg-rose-400 border-2 border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] flex items-center justify-center transition-transform group-hover:rotate-6">

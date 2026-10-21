@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTransitionRouter } from "@/components/layout/TransitionLink";
 import {
   Camera,
   HeartHandshake,
@@ -28,7 +28,7 @@ import {
 import { useAppStore } from "@/store/useAppStore";
 
 export default function HomePage() {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const { setMode, setRoomId, setUserName } = useAppStore();
 
   // State for LDR Room Modal
@@ -85,9 +85,9 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-[#FFFDF9]">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-14 flex flex-col gap-12 sm:gap-16">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-14 flex flex-col gap-12 sm:gap-16 sb-stagger">
         {/* Hero Section */}
-        <section className="text-center flex flex-col items-center max-w-3xl mx-auto">
+        <section className="text-center flex flex-col items-center max-w-3xl mx-auto sb-stagger">
           <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
             <BrutalBadge variant="rose" size="md" icon={<HeartHandshake className="w-3.5 h-3.5" strokeWidth={2.25} />}>
               Special LDR & Solo
@@ -99,7 +99,7 @@ export default function HomePage() {
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.1] mb-5">
             Photobooth Estetik untuk{" "}
-            <span className="inline-block bg-rose-400 px-3 py-1 rounded-2xl border-2 border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] rotate-[-1deg]">
+            <span className="inline-block bg-rose-400 px-3 py-1 rounded-2xl border-2 border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] rotate-[-1deg] sb-float">
               Pasangan LDR
             </span>{" "}
             dan Solo
@@ -110,7 +110,7 @@ export default function HomePage() {
           </p>
 
           {/* Quick Choice Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full text-left sb-stagger">
             {/* Solo Photobooth Card */}
             <BrutalCard
               variant="white"
@@ -214,7 +214,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sb-stagger">
             <BrutalCard variant="cream" className="flex flex-col gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-300 border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] flex items-center justify-center">
                 <Zap className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />

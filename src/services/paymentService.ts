@@ -6,6 +6,7 @@ export interface CreatePaymentPayload {
   roomId: string;
   packageId?: string;
   attempt?: number;
+  frameName?: string;
 }
 
 export interface ClientPaymentResponse {
@@ -52,6 +53,7 @@ class PaymentService {
         room_id: payload.roomId || "SOLO",
         package_id: payload.packageId || "HD_WATERMARK_UNLOCK",
         attempt: payload.attempt || 1,
+        frame_name: payload.frameName,
       }),
     });
 

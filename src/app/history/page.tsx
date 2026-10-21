@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/layout/TransitionLink";
 import {
   Clock,
   Download,
@@ -64,7 +64,7 @@ export default function HistoryPage() {
     <div className="min-h-screen bg-[#FFFDF9] flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 flex flex-col gap-8 sb-stagger">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-zinc-900">
           <div>
@@ -144,7 +144,7 @@ export default function HistoryPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sb-stagger">
             {filteredHistory.map((item) => (
               <BrutalCard
                 key={item.id}
