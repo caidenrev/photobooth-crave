@@ -10,6 +10,8 @@ export interface BrutalCardProps extends React.HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
   rounded?: "2xl" | "3xl" | "xl";
   elevation?: "sm" | "md" | "lg";
+  /** Animasi masuk saat card terlihat di layar (default: aktif) */
+  animate?: boolean;
 }
 
 export const BrutalCard = forwardRef<HTMLDivElement, BrutalCardProps>(
@@ -21,6 +23,7 @@ export const BrutalCard = forwardRef<HTMLDivElement, BrutalCardProps>(
       interactive = false,
       rounded = "2xl",
       elevation = "md",
+      animate = true,
       ...props
     },
     ref
@@ -60,6 +63,7 @@ export const BrutalCard = forwardRef<HTMLDivElement, BrutalCardProps>(
           roundedStyles[rounded],
           elevationStyles[elevation],
           interactiveStyles,
+          animate && "sb-reveal",
           className
         )}
         {...props}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { MotionObserver } from "@/components/layout/MotionObserver";
+import { MOTION_BOOT_SCRIPT } from "@/lib/motion";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -27,8 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="id"
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-[#FFFDF9] text-zinc-900 font-sans antialiased selection:bg-rose-300 selection:text-zinc-900">
+        <MotionObserver />
         {children}
       </body>
     </html>

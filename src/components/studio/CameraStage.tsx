@@ -436,7 +436,10 @@ export function CameraStage({ onCaptureComplete, className, modeLabel }: CameraS
         {/* Live Countdown Overlay */}
         {countdownValue !== null && (
           <div className="absolute inset-0 z-30 bg-rose-500/80 backdrop-blur-xs flex flex-col items-center justify-center animate-in zoom-in-75 duration-100">
-            <span className="text-8xl sm:text-9xl font-extrabold text-white font-mono drop-shadow-[4px_4px_0px_#18181b]">
+            <span
+              key={countdownValue}
+              className="text-8xl sm:text-9xl font-extrabold text-white font-mono drop-shadow-[4px_4px_0px_#18181b] sb-pop-in"
+            >
               {countdownValue}
             </span>
             <div className="flex items-center gap-2 mt-2 px-4 py-1.5 rounded-xl bg-white border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b]">

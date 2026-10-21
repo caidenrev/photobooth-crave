@@ -358,7 +358,7 @@ export function QrisCheckoutModal({
                 <span className="text-xs font-bold font-mono">Memuat QRIS Gateway...</span>
               </div>
             ) : status === "paid" ? (
-              <div className="flex flex-col items-center gap-2 text-center p-2">
+              <div className="flex flex-col items-center gap-2 text-center p-2 sb-pop-in">
                 <div className="w-12 h-12 rounded-full bg-emerald-100 border-2 border-zinc-900 flex items-center justify-center shadow-[2px_2px_0px_0px_#18181b]">
                   <Check className="w-7 h-7 text-emerald-600" strokeWidth={3} />
                 </div>
@@ -389,7 +389,7 @@ export function QrisCheckoutModal({
               <img
                 src={paymentData.qris_image_base64}
                 alt="QRIS SnapBond"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain sb-pop-in"
               />
             ) : (
               // Visual Matrix SVG QR Code tajam

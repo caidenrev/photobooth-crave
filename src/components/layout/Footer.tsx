@@ -7,7 +7,7 @@ import { BrutalBadge } from "@/components/ui";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#FFFDF9] border-t-2 border-zinc-900 mt-auto py-10 px-4 sm:px-6">
+    <footer className="w-full bg-[#FFFDF9] border-t-2 border-zinc-900 mt-auto py-10 px-4 sm:px-6 sb-reveal">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         {/* Brand Description */}
         <div className="flex flex-col gap-2 max-w-sm">

@@ -454,7 +454,7 @@ export function PhotostripPreview({ onOpenCheckout, className }: PhotostripPrevi
         <div className="p-2 bg-stone-100 rounded-2xl border-2 border-zinc-900 shadow-[4px_4px_0px_0px_#18181b] flex items-center justify-center max-w-full overflow-hidden">
           <canvas
             ref={canvasRef}
-            className="w-48 sm:w-56 h-auto rounded-xl border border-zinc-400 shadow-xs transition-transform duration-200"
+            className="w-48 sm:w-56 h-auto rounded-xl border border-zinc-400 shadow-xs transition-transform duration-200 sb-pop-in"
             style={{ maxHeight: "420px", objectFit: "contain" }}
           />
         </div>

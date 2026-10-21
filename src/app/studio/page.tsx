@@ -261,7 +261,7 @@ function StudioContent() {
                           <img
                             src={photoSrc}
                             alt={`Pose ${idx + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover sb-pop-in"
                           />
                         ) : (
                           <div className="flex flex-col items-center justify-center gap-0.5 text-zinc-400">

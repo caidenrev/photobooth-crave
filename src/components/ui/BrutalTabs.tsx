@@ -60,7 +60,7 @@ export function BrutalTabs({
               sizeClasses[size],
               isActive
                 ? cn(
-                    "border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b]",
+                    "border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] sb-pop",
                     activeColorMap[variant]
                   )
                 : "border-2 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-stone-200/50"

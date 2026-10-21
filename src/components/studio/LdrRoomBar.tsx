@@ -61,7 +61,7 @@ export function LdrRoomBar({ roomId, userName = "Kamu", className }: LdrRoomBarP
   return (
     <div
       className={cn(
-        "w-full bg-white border-2 border-zinc-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_#18181b] flex flex-col md:flex-row md:items-center justify-between gap-3",
+        "w-full bg-white border-2 border-zinc-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_#18181b] flex flex-col md:flex-row md:items-center justify-between gap-3 sb-reveal",
         className
       )}
     >
