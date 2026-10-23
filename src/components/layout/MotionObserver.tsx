@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const SELECTOR = ".sb-stagger > *, .sb-reveal";
+const SELECTOR = ".sb-stagger > *, .sb-reveal, .sb-fall";
 
 /** Lanjutkan animasi masuk yang ditahan CSS (paused) milik elemen ini saja. */
 function playEntrance(el: Element) {
@@ -12,7 +12,7 @@ function playEntrance(el: Element) {
 }
 
 /**
- * Menjalankan animasi masuk (.sb-reveal / .sb-stagger) saat elemen terlihat di layar,
+ * Menjalankan animasi masuk (.sb-reveal / .sb-stagger / .sb-fall) saat elemen terlihat di layar,
  * termasuk elemen yang baru di-mount (pindah halaman, data realtime, modal).
  *
  * Sengaja TIDAK mengubah className/atribut elemen: halaman yang belum selesai

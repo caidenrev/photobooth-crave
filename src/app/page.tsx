@@ -24,6 +24,9 @@ import {
   BrutalBadge,
   BrutalModal,
   BrutalInput,
+  FallingText,
+  PlayfulText,
+  fallDelay,
 } from "@/components/ui";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -87,26 +90,26 @@ export default function HomePage() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-14 flex flex-col gap-12 sm:gap-16 sb-stagger">
         {/* Hero Section */}
-        <section className="text-center flex flex-col items-center max-w-3xl mx-auto sb-stagger">
+        <section className="text-center flex flex-col items-center max-w-3xl mx-auto">
           <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-            <BrutalBadge variant="rose" size="md" icon={<HeartHandshake className="w-3.5 h-3.5" strokeWidth={2.25} />}>
+            <BrutalBadge variant="rose" size="md" className="sb-fall" style={fallDelay(0)} icon={<HeartHandshake className="w-3.5 h-3.5" strokeWidth={2.25} />}>
               Special LDR & Solo
             </BrutalBadge>
-            <BrutalBadge variant="amber" size="md" icon={<QrCode className="w-3.5 h-3.5" strokeWidth={2.25} />}>
+            <BrutalBadge variant="amber" size="md" className="sb-fall" style={fallDelay(120)} icon={<QrCode className="w-3.5 h-3.5" strokeWidth={2.25} />}>
               QRIS Semi-Premium
             </BrutalBadge>
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.1] mb-5">
-            Photobooth Estetik untuk{" "}
+            <PlayfulText text="Photobooth Estetik untuk" delay={250} />{" "}
             <span className="inline-block bg-rose-400 px-3 py-1 rounded-2xl border-2 border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] rotate-[-1deg] sb-float">
-              Pasangan LDR
+              <PlayfulText text="Pasangan LDR" delay={1200} />
             </span>{" "}
-            dan Solo
+            <PlayfulText text="dan Solo" delay={1750} />
           </h1>
 
           <p className="text-base sm:text-lg font-medium text-zinc-700 max-w-2xl leading-relaxed mb-8">
-            Abadikan momen intim bersama pasanganmu dari dua tempat berbeda secara sinkron dalam satu lembar photostrip. Coba gratis dengan preview, buka watermark HD via QRIS instan.
+            <FallingText text="Abadikan momen intim bersama pasanganmu dari dua tempat berbeda secara sinkron dalam satu lembar photostrip. Coba gratis dengan preview, buka watermark HD via QRIS instan." delay={2000} step={35} />
           </p>
 
           {/* Quick Choice Cards */}
@@ -123,26 +126,28 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-violet-300 border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] flex items-center justify-center">
                     <User className="w-6 h-6 text-zinc-900" strokeWidth={2.25} />
                   </div>
-                  <BrutalBadge variant="violet" size="sm">
+                  <BrutalBadge variant="violet" size="sm" className="sb-fall" style={fallDelay(150)}>
                     Mode Mandiri
                   </BrutalBadge>
                 </div>
 
                 <h2 className="text-xl font-extrabold text-zinc-900 mb-2">
-                  Mulai Solo Photobooth
+                  <FallingText text="Mulai Solo Photobooth" delay={250} step={100} />
                 </h2>
                 <p className="text-xs sm:text-sm font-semibold text-zinc-600 mb-6">
-                  Foto seru sendiri atau bareng teman di satu perangkat. Pilih filter retro, frame estetik, dan ambil 3-4 pose favorit.
+                  <FallingText text="Foto seru sendiri atau bareng teman di satu perangkat. Pilih filter retro, frame estetik, dan ambil 3-4 pose favorit." delay={550} step={25} />
                 </p>
               </div>
 
               <div className="pt-4 border-t-2 border-zinc-900 flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-zinc-700">
+                <span className="text-xs font-mono font-bold text-zinc-700 sb-fall inline-block" style={fallDelay(900)}>
                   Tanpa Registrasi
                 </span>
                 <BrutalButton
                   variant="violet"
                   size="sm"
+                  className="sb-fall"
+                  style={fallDelay(1000)}
                   icon={<ArrowRight className="w-4 h-4" strokeWidth={2.25} />}
                   iconPosition="right"
                 >
@@ -159,7 +164,7 @@ export default function HomePage() {
               className="group flex flex-col justify-between hover:bg-rose-50/50 relative overflow-hidden"
             >
               {/* Decorative Accent Ribbon */}
-              <div className="absolute top-0 right-0 bg-rose-400 border-b-2 border-l-2 border-zinc-900 px-3 py-0.5 rounded-bl-xl font-mono text-[10px] font-extrabold text-zinc-900 uppercase">
+              <div className="absolute top-0 right-0 bg-rose-400 border-b-2 border-l-2 border-zinc-900 px-3 py-0.5 rounded-bl-xl font-mono text-[10px] font-extrabold text-zinc-900 uppercase sb-fall" style={fallDelay(100)}>
                 Paling Favorit
               </div>
 
@@ -168,26 +173,28 @@ export default function HomePage() {
                   <div className="w-12 h-12 rounded-2xl bg-rose-400 border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] flex items-center justify-center">
                     <HeartHandshake className="w-6 h-6 text-zinc-900" strokeWidth={2.25} />
                   </div>
-                  <BrutalBadge variant="rose" size="sm">
+                  <BrutalBadge variant="rose" size="sm" className="sb-fall" style={fallDelay(150)}>
                     Real-Time Sync
                   </BrutalBadge>
                 </div>
 
                 <h2 className="text-xl font-extrabold text-zinc-900 mb-2">
-                  Buat / Gabung Room LDR
+                  <FallingText text="Buat / Gabung Room LDR" delay={250} step={100} />
                 </h2>
                 <p className="text-xs sm:text-sm font-semibold text-zinc-600 mb-6">
-                  Hubungkan 2 kamera dari kota atau negara berbeda. Shutter hitung mundur berjalan serentak, foto langsung menyatu berdampingan.
+                  <FallingText text="Hubungkan 2 kamera dari kota atau negara berbeda. Shutter hitung mundur berjalan serentak, foto langsung menyatu berdampingan." delay={650} step={25} />
                 </p>
               </div>
 
               <div className="pt-4 border-t-2 border-zinc-900 flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-zinc-700">
+                <span className="text-xs font-mono font-bold text-zinc-700 sb-fall inline-block" style={fallDelay(1000)}>
                   Kode Room 6 Digit
                 </span>
                 <BrutalButton
                   variant="primary"
                   size="sm"
+                  className="sb-fall"
+                  style={fallDelay(1100)}
                   icon={<Users className="w-4 h-4" strokeWidth={2.25} />}
                   iconPosition="right"
                 >
@@ -202,15 +209,15 @@ export default function HomePage() {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <BrutalBadge variant="emerald" size="sm" className="mb-2">
+              <BrutalBadge variant="emerald" size="sm" className="mb-2 sb-fall" style={fallDelay(0)}>
                 Teknologi Photobooth
               </BrutalBadge>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900">
-                Fitur Unggulan SnapBond
+                <FallingText text="Fitur Unggulan SnapBond" delay={150} step={110} />
               </h2>
             </div>
             <p className="text-xs sm:text-sm font-semibold text-zinc-600 max-w-md">
-              Didesain khusus untuk interaksi jarak jauh yang mulus tanpa mengurangi kualitas foto asli.
+              <FallingText text="Didesain khusus untuk interaksi jarak jauh yang mulus tanpa mengurangi kualitas foto asli." delay={500} step={35} />
             </p>
           </div>
 
@@ -220,10 +227,10 @@ export default function HomePage() {
                 <Zap className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />
               </div>
               <h3 className="font-extrabold text-base text-zinc-900">
-                Synchronized Shutter
+                <FallingText text="Synchronized Shutter" delay={200} step={100} />
               </h3>
               <p className="text-xs font-medium text-zinc-700 leading-relaxed">
-                Countdown 3-2-1 dan shutter flash terpicu secara bersamaan di kedua layar tanpa delay.
+                <FallingText text="Countdown 3-2-1 dan shutter flash terpicu secara bersamaan di kedua layar tanpa delay." delay={450} step={25} />
               </p>
             </BrutalCard>
 
@@ -232,10 +239,10 @@ export default function HomePage() {
                 <Camera className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />
               </div>
               <h3 className="font-extrabold text-base text-zinc-900">
-                High-Res Local Capture
+                <FallingText text="High-Res Local Capture" delay={350} step={100} />
               </h3>
               <p className="text-xs font-medium text-zinc-700 leading-relaxed">
-                Tangkapan foto diambil dari sensor kamera lokal langsung, bukan hasil kompresi video call.
+                <FallingText text="Tangkapan foto diambil dari sensor kamera lokal langsung, bukan hasil kompresi video call." delay={600} step={25} />
               </p>
             </BrutalCard>
 
@@ -244,10 +251,10 @@ export default function HomePage() {
                 <Layers className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />
               </div>
               <h3 className="font-extrabold text-base text-zinc-900">
-                Canvas Watermark
+                <FallingText text="Canvas Watermark" delay={500} step={100} />
               </h3>
               <p className="text-xs font-medium text-zinc-700 leading-relaxed">
-                Pratinjau canvas terenkripsi watermark. Lakukan pembayaran QRIS untuk membuka versi HD murni.
+                <FallingText text="Pratinjau canvas terenkripsi watermark. Lakukan pembayaran QRIS untuk membuka versi HD murni." delay={750} step={25} />
               </p>
             </BrutalCard>
 
@@ -256,10 +263,10 @@ export default function HomePage() {
                 <QrCode className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />
               </div>
               <h3 className="font-extrabold text-base text-zinc-900">
-                QRIS Auto-Unlock
+                <FallingText text="QRIS Auto-Unlock" delay={650} step={100} />
               </h3>
               <p className="text-xs font-medium text-zinc-700 leading-relaxed">
-                Scan QRIS dari aplikasi bank/e-wallet apa saja. Kunci foto HD otomatis terbuka untuk kedua pasangan.
+                <FallingText text="Scan QRIS dari aplikasi bank/e-wallet apa saja. Kunci foto HD otomatis terbuka untuk kedua pasangan." delay={900} step={25} />
               </p>
             </BrutalCard>
           </div>
@@ -269,55 +276,57 @@ export default function HomePage() {
         <section className="bg-white border-2 border-zinc-900 rounded-3xl p-6 sm:p-10 shadow-[6px_6px_0px_0px_#18181b]">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="max-w-xl flex flex-col gap-3 text-left">
-              <BrutalBadge variant="amber" size="sm" className="w-fit">
+              <BrutalBadge variant="amber" size="sm" className="w-fit sb-fall" style={fallDelay(0)}>
                 Skema Semi-Premium Transparan
               </BrutalBadge>
               <h2 className="text-2xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight">
-                Bayar Hanya Saat Puas dengan Hasilnya
+                <FallingText text="Bayar Hanya Saat Puas dengan Hasilnya" delay={150} step={110} />
               </h2>
               <p className="text-sm font-semibold text-zinc-600 leading-relaxed">
-                Coba pose berkali-kali bersama pasangan tanpa dipungut biaya. Anda hanya membayar satu kali saat ingin mengunduh photostrip cetak resolusi tinggi tanpa watermark.
+                <FallingText text="Coba pose berkali-kali bersama pasangan tanpa dipungut biaya. Anda hanya membayar satu kali saat ingin mengunduh photostrip cetak resolusi tinggi tanpa watermark." delay={800} step={25} />
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.25} />
-                  <span>Gratis Coba Studio & Preview</span>
+                  <span><FallingText text="Gratis Coba Studio & Preview" delay={1500} step={60} /></span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.25} />
-                  <span>Retake Pose Tidak Terbatas</span>
+                  <span><FallingText text="Retake Pose Tidak Terbatas" delay={1650} step={60} /></span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.25} />
-                  <span>QRIS Otomatis Terhubung</span>
+                  <span><FallingText text="QRIS Otomatis Terhubung" delay={1800} step={60} /></span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={2.25} />
-                  <span>Download HD Tanpa Watermark</span>
+                  <span><FallingText text="Download HD Tanpa Watermark" delay={1950} step={60} /></span>
                 </div>
               </div>
             </div>
 
             {/* Price Box */}
             <div className="w-full sm:w-auto min-w-[280px] bg-amber-50 border-2 border-zinc-900 rounded-2xl p-6 shadow-[4px_4px_0px_0px_#18181b] flex flex-col items-center text-center gap-3">
-              <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-zinc-600">
+              <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-zinc-600 sb-fall inline-block" style={fallDelay(200)}>
                 Tarif Cetak Digital
               </span>
               <div className="flex items-baseline gap-1">
-                <span className="text-xs font-extrabold text-zinc-900">Rp</span>
-                <span className="text-4xl sm:text-5xl font-extrabold text-zinc-900 font-mono tracking-tight">
+                <span className="text-xs font-extrabold text-zinc-900 sb-fall inline-block" style={fallDelay(400)}>Rp</span>
+                <span className="text-4xl sm:text-5xl font-extrabold text-zinc-900 font-mono tracking-tight sb-fall inline-block" style={fallDelay(500)}>
                   15.000
                 </span>
               </div>
               <span className="text-xs font-bold text-zinc-700">
-                per lembar photostrip (HD)
+                <FallingText text="per lembar photostrip (HD)" delay={700} step={80} />
               </span>
 
               <BrutalButton
                 variant="amber"
                 size="md"
                 fullWidth
+                className="sb-fall"
+                style={fallDelay(1000)}
                 onClick={handleStartSolo}
                 icon={<Camera className="w-4 h-4" strokeWidth={2.25} />}
               >
