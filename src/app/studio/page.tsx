@@ -24,6 +24,7 @@ import {
   BrutalModal,
   BrutalCard,
   BrutalNotificationModal,
+  PlayfulText,
 } from "@/components/ui";
 import { useAppStore } from "@/store/useAppStore";
 import { CameraStage } from "@/components/studio/CameraStage";
@@ -108,7 +109,7 @@ function StudioContent() {
 
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-base sm:text-lg text-zinc-900 hidden sm:inline">
-                SnapBond Studio
+                <PlayfulText text="SnapBond Studio" delay={100} />
               </span>
               {mode === "ldr" ? (
                 <BrutalBadge
