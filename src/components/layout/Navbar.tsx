@@ -59,7 +59,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden xl:flex items-center gap-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -81,7 +81,7 @@ export function Navbar() {
         </nav>
 
         {/* CTA Actions & User Profile */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden xl:flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-2">
               <Link
@@ -133,7 +133,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile Hamburger Button */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
           {user ? (
             <Link
               href="/history"
@@ -164,7 +164,7 @@ export function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-3 pt-3 border-t-2 border-zinc-900 flex flex-col gap-2 animate-in slide-in-from-top-2 duration-150">
+        <div className="xl:hidden mt-3 pt-3 border-t-2 border-zinc-900 flex flex-col gap-2 animate-in slide-in-from-top-2 duration-150">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (

@@ -10,10 +10,10 @@ export interface FallingTextProps {
 }
 
 /**
- * Efek tulisan jatuh slow-motion per kata. Hanya menambah animasi —
+ * Efek tulisan jatuh per kata (dipakai untuk judul section). Hanya menambah animasi —
  * style teks tetap diwarisi dari elemen induk.
  */
-export function FallingText({ text, delay = 0, step = 70 }: FallingTextProps) {
+export function FallingText({ text, delay = 0, step = 50 }: FallingTextProps) {
   const words = text.trim().split(/\s+/);
   return (
     <>

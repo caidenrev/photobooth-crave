@@ -37,7 +37,7 @@ export function BrutalBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-xl border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] font-mono tracking-tight select-none uppercase",
+        "inline-flex items-center justify-center rounded-xl border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] font-mono tracking-tight select-none uppercase whitespace-nowrap",
         variantStyles[variant],
         sizeStyles[size],
         className

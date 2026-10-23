@@ -17,7 +17,6 @@ import {
   BrutalCard,
   BrutalBadge,
   BrutalTabs,
-  PlayfulText,
 } from "@/components/ui";
 import {
   useStudioStore,
@@ -543,12 +542,7 @@ export function PhotostripPreview({ onOpenCheckout, className }: PhotostripPrevi
             <QrCode className="w-5 h-5 text-zinc-900" strokeWidth={2.25} />
           )}
           <h3 className="font-extrabold text-sm text-zinc-900 uppercase tracking-tight">
-            <PlayfulText
-              key={isPaid ? "paid" : "unpaid"}
-              text={isPaid ? "Status: Pembayaran Lunas!" : "Tebus Foto Tanpa Watermark"}
-              delay={100}
-              step={30}
-            />
+            {isPaid ? "Status: Pembayaran Lunas!" : "Tebus Foto Tanpa Watermark"}
           </h3>
         </div>
 

@@ -234,7 +234,7 @@ export default function AdminLayout({
       {/* ======================================================== */}
       {/* MOBILE BOTTOM NAVIGATION BAR (< 768px)                   */}
       {/* ======================================================== */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t-2 border-zinc-900 px-2 py-2 flex items-center justify-around shadow-[0px_-2px_10px_rgba(0,0,0,0.05)]">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t-2 border-zinc-900 px-1 py-2 flex items-center justify-around gap-0.5 shadow-[0px_-2px_10px_rgba(0,0,0,0.05)]">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -242,14 +242,14 @@ export default function AdminLayout({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all",
+                "flex-1 min-w-0 max-w-[88px] flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all",
                 isActive
                   ? "bg-violet-300 border-2 border-zinc-900 shadow-[2px_2px_0px_0px_#18181b] text-zinc-900 font-extrabold"
                   : "text-zinc-600 font-bold"
               )}
             >
               <div className="[&>svg]:w-4 [&>svg]:h-4">{item.icon}</div>
-              <span className="text-[10px] mt-0.5 tracking-tight">
+              <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-full">
                 {item.label.split(" ")[0]}
               </span>
             </Link>

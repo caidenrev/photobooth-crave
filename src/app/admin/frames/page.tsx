@@ -179,9 +179,9 @@ export default function AdminFramesPage() {
   return (
     <div className="flex flex-col gap-6 sb-stagger">
       {/* Page Title & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
             <BrutalBadge variant="violet" size="sm">
               Katalog & CMS
             </BrutalBadge>

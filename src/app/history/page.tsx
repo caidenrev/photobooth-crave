@@ -69,7 +69,7 @@ export default function HistoryPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-zinc-900">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
               <BrutalBadge variant="rose" size="sm">
                 Galeri Pribadi
               </BrutalBadge>
@@ -99,7 +99,7 @@ export default function HistoryPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {[
             { id: "ALL", label: "Semua Foto" },
             { id: "PAID", label: "Lunas (HD 300 DPI)" },
@@ -108,7 +108,7 @@ export default function HistoryPage() {
             <button
               key={tab.id}
               onClick={() => setFilterMode(tab.id as any)}
-              className={`px-3.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 filterMode === tab.id
                   ? "bg-amber-300 border-zinc-900 text-zinc-900 shadow-[2px_2px_0px_0px_#18181b]"
                   : "bg-white border-zinc-300 text-zinc-600 hover:bg-stone-50"

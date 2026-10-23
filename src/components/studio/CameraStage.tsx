@@ -13,7 +13,7 @@ import {
   Radio,
   Zap,
 } from "lucide-react";
-import { BrutalButton, BrutalBadge, PlayfulText } from "@/components/ui";
+import { BrutalButton, BrutalBadge } from "@/components/ui";
 import { useStudioStore, FilterType } from "@/store/useStudioStore";
 import { useAppStore } from "@/store/useAppStore";
 import { ldrSignaling, LdrMessage } from "@/services/ldrSignalingService";
@@ -531,7 +531,7 @@ export function CameraStage({ onCaptureComplete, className, modeLabel }: CameraS
                   </div>
                   <div>
                     <h4 className="font-extrabold text-sm text-white mb-0.5">
-                      <PlayfulText text="Menunggu Pasangan Masuk" delay={100} step={30} />
+                      Menunggu Pasangan Masuk
                     </h4>
                     <p className="text-xs text-zinc-400 max-w-xs">
                       Bagikan kode room ke pasanganmu, atau klik tombol di bawah untuk simulasi langsung.
@@ -576,12 +576,7 @@ export function CameraStage({ onCaptureComplete, className, modeLabel }: CameraS
 
               <div className="max-w-sm">
                 <h3 className="font-extrabold text-base sm:text-lg text-white mb-1">
-                  <PlayfulText
-                    key={isDummyMode ? "dummy" : "permission"}
-                    text={isDummyMode ? "Mode Simulasi Kamera Aktif" : "Izin Kamera Dibutuhkan"}
-                    delay={100}
-                    step={30}
-                  />
+                  {isDummyMode ? "Mode Simulasi Kamera Aktif" : "Izin Kamera Dibutuhkan"}
                 </h3>
                 <p className="text-xs font-medium text-zinc-400 leading-relaxed">
                   {isDummyMode

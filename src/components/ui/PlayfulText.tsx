@@ -9,17 +9,19 @@ export interface PlayfulTextProps {
   delay?: number;
   /** Jeda jatuh antar huruf (ms) */
   step?: number;
+  /** Goyang gelombang terus-menerus — pakai hanya untuk judul hero dekoratif */
+  wave?: boolean;
 }
 
-const FALL_DURATION_MS = 1600;
+const FALL_DURATION_MS = 900;
 const SPRING_BACK = "transform 900ms cubic-bezier(0.34, 1.8, 0.5, 1)";
 
 /**
- * Huruf interaktif: jatuh slow-motion saat muncul, bergoyang pelan (gelombang),
- * melompat saat di-hover, dan bisa di-drag lalu memantul kembali ke tempatnya.
+ * Huruf interaktif: jatuh saat muncul, melompat saat di-hover, dan bisa di-drag
+ * lalu memantul kembali ke tempatnya. Goyang gelombang hanya bila `wave` aktif.
  * Style teks tetap diwarisi dari elemen induk.
  */
-export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
+export function PlayfulText({ text, delay = 0, step = 25, wave = false }: PlayfulTextProps) {
   const drag = useRef<{ el: HTMLElement; x: number; y: number; moved: boolean } | null>(null);
   // true bila pointer terakhir benar-benar menggeser huruf → klik berikutnya dibatalkan
   const justDragged = useRef(false);
@@ -88,11 +90,13 @@ export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
                   style={{ "--sb-delay": `${fallDelay}ms` } as React.CSSProperties}
                 >
                   <span
-                    className="sb-wave"
+                    className={wave ? "sb-wave" : "inline-block"}
                     style={
-                      {
-                        "--sb-wave-delay": `${fallDelay + FALL_DURATION_MS + i * 90}ms`,
-                      } as React.CSSProperties
+                      wave
+                        ? ({
+                            "--sb-wave-delay": `${fallDelay + FALL_DURATION_MS + i * 90}ms`,
+                          } as React.CSSProperties)
+                        : undefined
                     }
                   >
                     <span

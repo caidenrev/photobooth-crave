@@ -190,18 +190,19 @@ function StudioContent() {
             items={[
               {
                 id: "camera",
-                label: "Panggung Kamera",
+                label: "Kamera",
                 icon: <Camera className="w-3.5 h-3.5" strokeWidth={2.25} />,
               },
               {
                 id: "preview",
-                label: "Live Photostrip",
+                label: "Photostrip",
                 icon: <ImageIcon className="w-3.5 h-3.5" strokeWidth={2.25} />,
                 badge: `${photos.filter(Boolean).length}/${maxSlots}`,
               },
             ]}
             activeId={mobileActiveView}
             onChange={(id) => setMobileActiveView(id as "camera" | "preview")}
+            className="w-full sm:w-auto [&>button]:flex-1 sm:[&>button]:flex-none"
           />
         </div>
       </header>

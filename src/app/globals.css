@@ -80,7 +80,7 @@
 @keyframes sb-fade-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, 10px, 0);
   }
 }
 
@@ -292,16 +292,16 @@
     380ms cubic-bezier(0.4, 0, 0.2, 1) both sb-page-slide;
 }
 ::view-transition-old(.nav-forward) {
-  --sb-slide-offset: -60px;
+  --sb-slide-offset: -24px;
 }
 ::view-transition-new(.nav-forward) {
-  --sb-slide-offset: 60px;
+  --sb-slide-offset: 24px;
 }
 ::view-transition-old(.nav-back) {
-  --sb-slide-offset: 60px;
+  --sb-slide-offset: 24px;
 }
 ::view-transition-new(.nav-back) {
-  --sb-slide-offset: -60px;
+  --sb-slide-offset: -24px;
 }
 
 /* Navbar tetap diam saat konten berpindah */
@@ -358,31 +358,24 @@ html.sb-motion .sb-reveal.sb-flash {
 }
 
 /* ======================================================== */
-/* Tulisan jatuh slow-motion (beranda)                       */
-/* Jatuh dari atas, cepat di awal lalu melambat panjang saat  */
-/* mendarat, dengan sedikit putaran & blur yang menghilang.   */
+/* Tulisan jatuh (judul)                                     */
+/* Turun pendek dari atas lalu melambat saat mendarat.        */
 /* ======================================================== */
 @keyframes sb-fall {
   0% {
     opacity: 0;
-    transform: translate3d(0, -1.6em, 0) rotate(-8deg);
-    filter: blur(6px);
+    transform: translate3d(0, -0.6em, 0) rotate(-3deg);
   }
-  35% {
+  60% {
     opacity: 1;
-    filter: blur(1px);
-  }
-  70% {
-    transform: translate3d(0, 0.08em, 0) rotate(1deg);
   }
   100% {
     transform: translate3d(0, 0, 0) rotate(0deg);
-    filter: blur(0);
   }
 }
 
 .sb-fall {
-  animation: sb-fall 1.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: sb-fall 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: var(--sb-delay, 0ms);
   transform-origin: 50% 100%;
 }
@@ -395,17 +388,14 @@ html.sb-motion .sb-reveal.sb-flash {
   100% {
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
-  25% {
-    transform: translate3d(0, -0.06em, 0) rotate(-2deg);
-  }
-  75% {
-    transform: translate3d(0, 0.03em, 0) rotate(1.5deg);
+  50% {
+    transform: translate3d(0, -0.04em, 0) rotate(-1deg);
   }
 }
 
 .sb-wave {
   display: inline-block;
-  animation: sb-wave 2.8s ease-in-out infinite;
+  animation: sb-wave 3.6s ease-in-out infinite;
   animation-delay: var(--sb-wave-delay, 0ms);
 }
 
@@ -421,5 +411,5 @@ html.sb-motion .sb-reveal.sb-flash {
 }
 
 .sb-letter:hover {
-  transform: translate3d(0, -0.14em, 0) rotate(-8deg) scale(1.15);
+  transform: translate3d(0, -0.08em, 0) rotate(-4deg) scale(1.06);
 }

@@ -78,9 +78,9 @@ export default function AdminOverviewPage() {
   return (
     <div className="flex flex-col gap-8 sb-stagger">
       {/* Top Title & Header Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
             <BrutalBadge variant="violet" size="sm">
               SaaS Admin Center
             </BrutalBadge>
@@ -251,7 +251,7 @@ export default function AdminOverviewPage() {
           </div>
 
           {/* Quick Stats Pill */}
-          <div className="p-2.5 bg-stone-100 rounded-xl border-2 border-zinc-900 flex items-center gap-4 text-xs font-mono">
+          <div className="p-2.5 bg-stone-100 rounded-xl border-2 border-zinc-900 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono">
             <div>
               <span className="text-zinc-500">Terpilih: </span>
               <span className="font-extrabold text-zinc-900">
@@ -275,7 +275,7 @@ export default function AdminOverviewPage() {
 
         {/* Bar Chart Visual */}
         <div className="pt-4">
-          <div className="h-56 flex items-end justify-between gap-2 sm:gap-4 px-2">
+          <div className="h-56 flex items-end justify-between gap-1.5 sm:gap-4 px-0 sm:px-2">
             {WEEKLY_DATA.map((item, idx) => {
               const heightPercent = Math.round((item.revenue / maxRevenue) * 100);
               const isSelected = idx === (selectedIdx ?? WEEKLY_DATA.length - 1);
@@ -284,11 +284,11 @@ export default function AdminOverviewPage() {
                 <div
                   key={item.date || idx}
                   onClick={() => setSelectedIdx(idx)}
-                  className="flex-1 flex flex-col items-center gap-2 group cursor-pointer"
+                  className="flex-1 min-w-0 flex flex-col items-center gap-2 group cursor-pointer"
                 >
                   {/* Tooltip on hover */}
                   <div
-                    className={`transition-opacity text-[11px] font-mono font-bold px-2 py-0.5 rounded border border-zinc-900 whitespace-nowrap shadow-[1.5px_1.5px_0px_0px_#18181b] ${
+                    className={`transition-opacity text-[10px] sm:text-[11px] font-mono font-bold px-1 sm:px-2 py-0.5 rounded border border-zinc-900 whitespace-nowrap shadow-[1.5px_1.5px_0px_0px_#18181b] ${
                       isSelected
                         ? "bg-amber-300 text-zinc-900 opacity-100"
                         : "bg-white text-zinc-700 opacity-0 group-hover:opacity-100"
@@ -339,7 +339,7 @@ export default function AdminOverviewPage() {
             </div>
             <Link
               href="/admin/transactions"
-              className="text-xs font-bold text-zinc-700 hover:text-zinc-950 flex items-center gap-1 underline"
+              className="text-xs font-bold text-zinc-700 hover:text-zinc-950 flex items-center gap-1 underline whitespace-nowrap shrink-0"
             >
               Lihat Semua
               <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.25} />
@@ -364,14 +364,14 @@ export default function AdminOverviewPage() {
               .map((tx, idx) => (
               <div
                 key={tx.orderId}
-                className="p-3 bg-stone-50 rounded-xl border-2 border-zinc-900 flex items-center justify-between shadow-[2px_2px_0px_0px_#18181b] sb-reveal"
+                className="p-3 bg-stone-50 rounded-xl border-2 border-zinc-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-[2px_2px_0px_0px_#18181b] sb-reveal"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-200 border-2 border-zinc-900 flex items-center justify-center font-mono font-extrabold text-xs">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 shrink-0 rounded-lg bg-amber-200 border-2 border-zinc-900 flex items-center justify-center font-mono font-extrabold text-xs">
                     #{idx + 1}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-mono font-bold text-xs text-zinc-900">
+                    <span className="font-mono font-bold text-xs text-zinc-900 break-all">
                       {tx.orderId}
                     </span>
                     <span className="text-[11px] text-zinc-500 font-medium">
@@ -380,7 +380,7 @@ export default function AdminOverviewPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                   <div className="text-right">
                     <div className="text-xs font-mono font-bold text-zinc-900">
                       Rp{tx.amount.toLocaleString("id-ID")}

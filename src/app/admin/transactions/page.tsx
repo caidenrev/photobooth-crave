@@ -166,9 +166,9 @@ export default function AdminTransactionsPage() {
   return (
     <div className="flex flex-col gap-6 sb-stagger">
       {/* Top Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
             <BrutalBadge variant="amber" size="sm">
               Log Transaksi
             </BrutalBadge>
@@ -221,8 +221,8 @@ export default function AdminTransactionsPage() {
       {/* Main Container Card */}
       <BrutalCard variant="white" className="p-5 sm:p-6 flex flex-col gap-5">
         {/* Search Bar & Status Filters */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-2 border-zinc-900">
-          <div className="w-full md:w-80">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-4 border-b-2 border-zinc-900">
+          <div className="w-full xl:w-80 shrink-0">
             <BrutalInput
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -232,7 +232,7 @@ export default function AdminTransactionsPage() {
           </div>
 
           {/* Status Filter Buttons */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+          <div className="flex flex-wrap items-center gap-1.5">
             {[
               { id: "ALL", label: "Semua" },
               { id: "PAID", label: "Lunas (Paid)" },
@@ -263,7 +263,7 @@ export default function AdminTransactionsPage() {
         {/* ======================================================== */}
         {/* DESKTOP TABLE VIEW (Visible on sm and up)                */}
         {/* ======================================================== */}
-        <div className="hidden sm:block overflow-x-auto">
+        <div className="hidden xl:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b-2 border-zinc-900 text-[11px] font-mono font-extrabold uppercase text-zinc-600">
@@ -301,7 +301,7 @@ export default function AdminTransactionsPage() {
                       {tx.orderId}
                     </td>
                     <td className="py-3.5 px-3 font-mono font-extrabold text-xs text-zinc-800">
-                      <span className="px-2 py-0.5 bg-stone-100 rounded-md border border-zinc-900">
+                      <span className="px-2 py-0.5 bg-stone-100 rounded-md border border-zinc-900 whitespace-nowrap">
                         {tx.roomCode}
                       </span>
                     </td>
@@ -312,7 +312,7 @@ export default function AdminTransactionsPage() {
                       Rp{tx.amount.toLocaleString("id-ID")}
                     </td>
                     <td className="py-3.5 px-3">{renderStatusBadge(tx.status)}</td>
-                    <td className="py-3.5 px-3 text-xs text-zinc-500 font-medium">
+                    <td className="py-3.5 px-3 text-xs text-zinc-500 font-medium whitespace-nowrap">
                       {tx.timestamp}
                     </td>
                     <td className="py-3.5 px-3 text-right">
@@ -340,7 +340,7 @@ export default function AdminTransactionsPage() {
         {/* ======================================================== */}
         {/* MOBILE CARD LIST VIEW (Visible on < sm)                  */}
         {/* ======================================================== */}
-        <div className="sm:hidden flex flex-col gap-3">
+        <div className="xl:hidden flex flex-col gap-3 lg:grid lg:grid-cols-2">
           {isLoading ? (
             <div className="py-6 text-center text-zinc-500 font-bold text-xs animate-pulse">
               Memuat transaksi terbaru...
