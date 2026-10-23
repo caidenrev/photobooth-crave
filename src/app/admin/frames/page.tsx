@@ -26,6 +26,7 @@ import {
   BrutalInput,
   BrutalModal,
   BrutalNotificationModal,
+  PlayfulText,
 } from "@/components/ui";
 import { useFramesStore, FrameItem } from "@/store/useFramesStore";
 
@@ -189,7 +190,7 @@ export default function AdminFramesPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-            Katalog Frame & Manajemen Desain Canva
+            <PlayfulText text="Katalog Frame & Manajemen Desain Canva" delay={150} />
           </h1>
         </div>
 

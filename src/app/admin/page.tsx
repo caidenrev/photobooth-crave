@@ -22,6 +22,7 @@ import {
   BrutalButton,
   BrutalCard,
   BrutalBadge,
+  PlayfulText,
 } from "@/components/ui";
 import {
   useAdminLiveData,
@@ -96,7 +97,7 @@ export default function AdminOverviewPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-            Ringkasan Bisnis & Analytics
+            <PlayfulText text="Ringkasan Bisnis & Analytics" delay={150} />
           </h1>
         </div>
 

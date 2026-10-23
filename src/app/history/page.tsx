@@ -21,6 +21,7 @@ import {
   BrutalCard,
   BrutalBadge,
   BrutalNotificationModal,
+  PlayfulText,
 } from "@/components/ui";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Navbar } from "@/components/layout/Navbar";
@@ -77,7 +78,7 @@ export default function HistoryPage() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-              Riwayat Photostrip Kamu
+              <PlayfulText text="Riwayat Photostrip Kamu" delay={150} />
             </h1>
             <p className="text-xs sm:text-sm font-semibold text-zinc-600 mt-1">
               Koleksi momen manis photobooth bersama pasangan dan foto solo yang tersimpan.

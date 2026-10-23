@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Radio } from "lucide-react";
-import { BrutalCard, BrutalBadge } from "@/components/ui";
+import { BrutalCard, BrutalBadge, PlayfulText } from "@/components/ui";
 
 export default function AdminRoomsPage() {
   return (
@@ -12,7 +12,7 @@ export default function AdminRoomsPage() {
           WebRTC Signaling
         </BrutalBadge>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900">
-          Monitor Room LDR Aktif
+          <PlayfulText text="Monitor Room LDR Aktif" delay={150} />
         </h1>
       </div>
 

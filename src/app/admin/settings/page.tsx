@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Settings } from "lucide-react";
-import { BrutalCard, BrutalBadge } from "@/components/ui";
+import { BrutalCard, BrutalBadge, PlayfulText } from "@/components/ui";
 
 export default function AdminSettingsPage() {
   return (
@@ -12,7 +12,7 @@ export default function AdminSettingsPage() {
           Konfigurasi Sistem
         </BrutalBadge>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900">
-          Pengaturan SaaS & Gateway QRIS
+          <PlayfulText text="Pengaturan SaaS & Gateway QRIS" delay={150} />
         </h1>
       </div>
 

@@ -15,6 +15,7 @@ import {
   BrutalInput,
   BrutalModal,
   BrutalNotificationModal,
+  PlayfulText,
 } from "@/components/ui";
 import {
   useAdminLiveData,
@@ -187,7 +188,7 @@ export default function AdminTransactionsPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-            Monitoring Transaksi QRIS
+            <PlayfulText text="Monitoring Transaksi QRIS" delay={150} />
           </h1>
         </div>
 
