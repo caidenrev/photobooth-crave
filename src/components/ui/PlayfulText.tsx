@@ -20,12 +20,17 @@ const SPRING_BACK = "transform 900ms cubic-bezier(0.34, 1.8, 0.5, 1)";
  * Style teks tetap diwarisi dari elemen induk.
  */
 export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
-  const drag = useRef<{ el: HTMLElement; x: number; y: number } | null>(null);
+  const drag = useRef<{ el: HTMLElement; x: number; y: number; moved: boolean } | null>(null);
+  // true bila pointer terakhir benar-benar menggeser huruf → klik berikutnya dibatalkan
+  const justDragged = useRef(false);
 
   const onPointerDown = (e: React.PointerEvent<HTMLSpanElement>) => {
     const el = e.currentTarget;
+    // Cegah drag native link/seleksi teks saat huruf berada di dalam <a>
+    e.preventDefault();
     el.setPointerCapture(e.pointerId);
-    drag.current = { el, x: e.clientX, y: e.clientY };
+    drag.current = { el, x: e.clientX, y: e.clientY, moved: false };
+    justDragged.current = false;
     el.style.transition = "none";
     el.style.zIndex = "20";
     el.style.cursor = "grabbing";
@@ -36,6 +41,7 @@ export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
     if (!d || d.el !== e.currentTarget) return;
     const dx = e.clientX - d.x;
     const dy = e.clientY - d.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) d.moved = true;
     const tilt = Math.max(-25, Math.min(25, dx * 0.15));
     d.el.style.transform = `translate(${dx}px, ${dy}px) rotate(${tilt}deg) scale(1.15)`;
   };
@@ -44,6 +50,7 @@ export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
     const d = drag.current;
     if (!d || d.el !== e.currentTarget) return;
     drag.current = null;
+    justDragged.current = d.moved;
     d.el.style.transition = SPRING_BACK;
     d.el.style.transform = "";
     d.el.style.cursor = "";
@@ -51,6 +58,14 @@ export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
       d.el.style.zIndex = "";
       d.el.style.transition = "";
     }, 900);
+  };
+
+  // Huruf di dalam link: selesai drag tidak boleh memicu navigasi
+  const onClickCapture = (e: React.MouseEvent<HTMLSpanElement>) => {
+    if (!justDragged.current) return;
+    justDragged.current = false;
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   let letterIndex = 0;
@@ -86,6 +101,7 @@ export function PlayfulText({ text, delay = 0, step = 45 }: PlayfulTextProps) {
                       onPointerMove={onPointerMove}
                       onPointerUp={release}
                       onPointerCancel={release}
+                      onClickCapture={onClickCapture}
                     >
                       {char}
                     </span>

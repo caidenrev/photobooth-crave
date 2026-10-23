@@ -23,6 +23,7 @@ import {
   BrutalInput,
   BrutalTabs,
   BrutalNotificationModal,
+  PlayfulText,
 } from "@/components/ui";
 import {
   signInWithEmail,
@@ -163,7 +164,7 @@ export default function LoginPage() {
           </div>
           <div className="flex flex-col text-left">
             <span className="font-black text-2xl tracking-tight text-zinc-900 leading-none">
-              SnapBond
+              <PlayfulText text="SnapBond" delay={100} />
             </span>
             <span className="text-xs font-bold text-zinc-600 mt-0.5">
               Akun Pasangan & Creator
